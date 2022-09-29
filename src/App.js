@@ -1,22 +1,15 @@
 import { useState } from 'react';
-import './App.css';
+import './index.css';
+import buttons from './buttonData.js';
 
-function DrumPad(props) {
-
+function Button(props) {
   return (
     <button
-      className="drum-pad bg-teal-500 hover:bg-teal-600 w-16 h-16 border border-sky-900 rounded-md"
-      id={props.drumKey.description}
+      className="bg-teal-500 hover:bg-teal-600 w-16 h-16 border border-sky-900 rounded-md"
+      id={props.data.id}
       type="button"
-      onClick={playKey}>
-      {props.drumKey.name.toUpperCase()}
-      <audio
-        ref={ref}
-        className="clip"
-        id={props.drumKey.name.toUpperCase()}
-        src={props.drumKey.audio}
-        desc={props.drumKey.description}
-      />
+    >
+      {props.data.value}
     </button>
    );
 }
@@ -24,8 +17,10 @@ function DrumPad(props) {
 
 function App() {
   return (
-    <div className="App">
-
+    <div>
+      {buttons.map(b =>
+        <Button data={b} />
+      )}
     </div>
   );
 }
