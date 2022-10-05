@@ -1,35 +1,7 @@
-const buttons = [
+const numbers = [
   {
-    id:"equals",
-    value:"=",
-  },
-  {
-    id:"zero",
-    value:"0",
-  },
-  {
-    id:"one",
-    value:"1",
-  },
-  {
-    id:"two",
-    value:"2",
-  },
-  {
-    id:"three",
-    value:"3",
-  },
-  {
-    id:"four",
-    value:"4",
-  },
-  {
-    id:"five",
-    value:"5",
-  },
-  {
-    id:"six",
-    value:"6",
+    id:"clear",
+    value:"AC",
   },
   {
     id:"seven",
@@ -44,29 +16,60 @@ const buttons = [
     value:"9",
   },
   {
-    id:"add",
-    value:"+",
+    id:"four",
+    value:"4",
   },
   {
-    id:"subtract",
-    value:"-",
+    id:"five",
+    value:"5",
+  },
+  {
+    id:"six",
+    value:"6",
+  },
+  {
+    id:"one",
+    value:"1",
+  },
+  {
+    id:"two",
+    value:"2",
+  },
+  {
+    id:"three",
+    value:"3",
+  },
+  {
+    id:"zero",
+    value:"0",
+  },
+  {
+    id:"decimal",
+    value:".",
+  }
+]
+
+const operators = [
+  {
+    id:"divide",
+    value:"/",
   },
   {
     id:"multiply",
     value:"x",
   },
   {
-    id:"divide",
-    value:"/",
+    id:"subtract",
+    value:"-",
+  },
+    {
+    id:"add",
+    value:"+",
   },
   {
-    id:"decimal",
-    value:".",
-  },
-  {
-    id:"clear",
-    value:"AC",
+    id:"equals",
+    value:"=",
   },
 ]
 
-export default buttons;
+export {numbers, operators};
