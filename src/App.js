@@ -2,6 +2,14 @@ import { useState } from 'react';
 import './index.css';
 import { numbers, operators } from './buttonData.js';
 
+function calculate(i) {
+  if (i == "AC") {
+    return("0")
+  } else {
+    return(i)
+  }
+}
+
 function Button(props) {
   let bg = "bg-orange-400 active:bg-orange-500";
   if (props.type === "number") {
@@ -22,7 +30,7 @@ function Button(props) {
       id={props.data.id}
       type="button"
       value={props.data.value}
-      onClick={(e) => props.setDisplay(e.target.value)}
+      onClick={(e) => props.setDisplay(calculate(e.target.value))}
     >
       {props.data.value}
     </button>
