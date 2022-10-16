@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './index.css';
 import { numberGroup, operatorGroup } from './buttonData.js';
 
-function updateNumbers(update, num, setNum, setOps) {
+function updateNumbers(update, num, setNum, ops, setOps) {
   let updated = null
   const currentNumber = num[num.length - 1]
   const hasDecimal = currentNumber.includes(".")
@@ -22,13 +22,21 @@ function updateNumbers(update, num, setNum, setOps) {
       updated = [zero]
     } else {
       updated = [...num]
-      updated.splice(-1, 1, zero)
+      updated[num.length - 1] = zero
     }
 
   // only allow for one "."
   } else if ((update === "."  && !hasDecimal) || update !== ".") {
-    updated = [...num]
-    updated.splice(-1, 1, currentNumber + update)
+    if (num.length === ops.length) {
+      if (update === ".") {
+        updated = [...num, "0" + update]
+      } else {
+        updated = [...num, update]
+      }
+    } else {
+      updated = [...num]
+      updated[num.length - 1] = currentNumber + update
+    }
   } else {
     updated = [...num]
   }
@@ -36,12 +44,26 @@ function updateNumbers(update, num, setNum, setOps) {
 }
 
 function updateOperations(update, num, setNum, ops, setOps) {
-  if (ops.length === 0) {
-    setOps([update])
-  } else {
-    setOps([...ops, update])
+  const currentNumber = num[num.length - 1]
+
+  if (update === "=" && ops.length > 0) {
+    calculate(num, setNum, ops, setOps)
+  } else if (ops.length != num.length && currentNumber !== "-") {
+    setOps(list => (list ? list : []).concat(update));
+  } else if (update === "-" && currentNumber !== "-") {
+    setNum(list => list.concat("-"));
   }
-  setNum([...num, "0"])
+}
+
+function calculate(num, setNum, ops, setOps) {
+  let total = 0
+  // scan operators until they're all gone
+  // scan operators using order of operations
+  for (let i=0; i < ops.length;) {
+
+    // conduct operation and capture total
+    // remove operation and numbers from state
+  }
 }
 
 function Button(props) {
@@ -64,6 +86,7 @@ function Button(props) {
         target,
         props.numbers,
         props.setNumbers,
+        props.operations,
         props.setOperations
       )
     } else {
@@ -83,7 +106,7 @@ function Button(props) {
       id={props.data.id}
       type="button"
       value={props.data.value}
-      onClick={(e) => updateDisplay(e.target.value,)}
+      onClick={(e) => updateDisplay(e.target.value)}
     >
       {props.data.value}
     </button>
