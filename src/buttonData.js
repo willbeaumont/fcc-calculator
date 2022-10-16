@@ -1,4 +1,4 @@
-const numbers = [
+const numberGroup = [
   {
     id:"clear",
     value:"AC",
@@ -49,7 +49,7 @@ const numbers = [
   }
 ]
 
-const operators = [
+const operatorGroup = [
   {
     id:"divide",
     value:"/",
@@ -72,4 +72,4 @@ const operators = [
   },
 ]
 
-export {numbers, operators};
+export {numberGroup, operatorGroup};
