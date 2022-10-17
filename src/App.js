@@ -3,6 +3,11 @@ import './index.css';
 import { numberGroup, operatorGroup } from './buttonData.js';
 
 function updateNumbers(update, num, setNum, ops, setOps) {
+  if (!ops) {
+    num = ["0"]
+    setOps([])
+  }
+
   let updated = null
   const currentNumber = num[num.length - 1]
   const hasDecimal = currentNumber.includes(".")
@@ -10,6 +15,12 @@ function updateNumbers(update, num, setNum, ops, setOps) {
   if (update === "AC") { // clear both numbers and operators
     updated = ["0"];
     setOps([]);
+  } else if (num.length === ops.length) {
+    if (update === ".") { // keep 0 for decimal
+      updated = [...num, "0."]
+    } else {
+      updated = [...num, update]
+    }
   } else if (currentNumber === "0") { // special case for start
     let zero = null
     if (update === ".") { // keep 0 for decimal
@@ -48,22 +59,75 @@ function updateOperations(update, num, setNum, ops, setOps) {
 
   if (update === "=" && ops.length > 0) {
     calculate(num, setNum, ops, setOps)
-  } else if (ops.length != num.length && currentNumber !== "-") {
+  } else if (ops.length !== num.length && currentNumber !== "-") {
     setOps(list => (list ? list : []).concat(update));
   } else if (update === "-" && currentNumber !== "-") {
     setNum(list => list.concat("-"));
+  } else {
+    ops.pop()
+    setOps([...ops, update])
+    if (currentNumber === "-") {
+      num.pop()
+      setNum([...num])
+    }
   }
 }
 
 function calculate(num, setNum, ops, setOps) {
-  let total = 0
-  // scan operators until they're all gone
-  // scan operators using order of operations
-  for (let i=0; i < ops.length;) {
+  let subTotal = 0
+  let removeOld = null;
 
-    // conduct operation and capture total
-    // remove operation and numbers from state
+  // scan operators until they're all gone
+  while (ops.length > 0) {
+    // scan operators using order of operations
+    for (let i=0; i < ops.length;) {
+      removeOld = false
+      subTotal = 0
+      // conduct operation and capture total
+      if (ops[i] === "x") {
+        subTotal = Number(num[i]) * Number(num[i + 1])
+        removeOld = true
+      }
+
+      if (ops[i] === "/") {
+        subTotal = Number(num[i]) / Number(num[i + 1])
+        removeOld = true
+      }
+
+      // remove operation and numbers from state
+      if (removeOld) {
+        ops.splice(i, 1)
+        num.splice(i, 2, subTotal.toFixed(4).toString())
+      } else {
+        i++
+      }
+    }
+
+    for (let i=0; i < ops.length;) {
+      removeOld = false
+      subTotal = 0
+      // conduct operation and capture total
+      if (ops[i] === "-") {
+        subTotal = Number(num[i]) - Number(num[i + 1])
+        removeOld = true
+      }
+
+      if (ops[i] === "+") {
+        subTotal = Number(num[i]) + Number(num[i + 1])
+        removeOld = true
+      }
+
+      // remove operation and numbers from state
+      if (removeOld) {
+        ops.splice(i, 1)
+        num.splice(i, 2, subTotal.toFixed(4).toString())
+      } else {
+        i++
+      }
+    }
   }
+  setNum(num)
+  setOps(false)
 }
 
 function Button(props) {
@@ -153,8 +217,10 @@ function App() {
     <div className="w-screen h-screen flex bg-gray-800">
       <div className="m-auto">
         <div className="flex flex-col">
-          <div id="display" className="bg-gray-700 h-16 border-gray-800 text-5xl text-white text-right pr-4 pt-1">
-            {display(numbers, operations)}
+          <div>
+            <div id="display" className="bg-gray-700 h-16 border-gray-800 text-5xl text-white text-right px-4 pt-1">
+              {display(numbers, operations)}
+            </div>
           </div>
           <div className="flex">
               <ButtonGroup
