@@ -3,7 +3,7 @@ import './index.css';
 import { numberGroup, operatorGroup } from './buttonData.js';
 
 function updateNumbers(update, num, setNum, ops, setOps) {
-  if (!ops) {
+  if (!ops) { // re-init ops when set to false after "=" calculation
     num = ["0"]
     setOps([])
   }
@@ -15,41 +15,22 @@ function updateNumbers(update, num, setNum, ops, setOps) {
   if (update === "AC") { // clear both numbers and operators
     updated = ["0"];
     setOps([]);
-  } else if (num.length === ops.length) {
+  } else if (num.length === ops.length) { // add new number 
     if (update === ".") { // keep 0 for decimal
       updated = [...num, "0."]
     } else {
       updated = [...num, update]
     }
-  } else if (currentNumber === "0") { // special case for start
-    let zero = null
-    if (update === ".") { // keep 0 for decimal
-      zero = currentNumber + "."
-    } else {
-      zero = update
-    }
-
-    if (num.length === 1) {
-      updated = [zero]
-    } else {
-      updated = [...num]
-      updated[num.length - 1] = zero
-    }
-
-  // only allow for one "."
-  } else if ((update === "."  && !hasDecimal) || update !== ".") {
-    if (num.length === ops.length) {
-      if (update === ".") {
-        updated = [...num, "0" + update]
-      } else {
-        updated = [...num, update]
-      }
-    } else {
-      updated = [...num]
-      updated[num.length - 1] = currentNumber + update
-    }
   } else {
     updated = [...num]
+
+    if ((update === "."  && !hasDecimal) || update !== ".") { // only allow for one "."
+      if (currentNumber === "0" && update !== ".") { // special case for 0 - replace if update isn't "zero"
+        updated[num.length - 1] = update
+      } else {
+        updated[num.length - 1] = currentNumber + update
+      }
+    }
   }
   setNum(updated)
 }
@@ -97,7 +78,7 @@ function calculate(num, setNum, ops, setOps) {
       // remove operation and numbers from state
       if (removeOld) {
         ops.splice(i, 1)
-        num.splice(i, 2, subTotal.toFixed(4).toString())
+        num.splice(i, 2, subTotal.toString())
       } else {
         i++
       }
@@ -120,7 +101,7 @@ function calculate(num, setNum, ops, setOps) {
       // remove operation and numbers from state
       if (removeOld) {
         ops.splice(i, 1)
-        num.splice(i, 2, subTotal.toFixed(4).toString())
+        num.splice(i, 2, subTotal.toString())
       } else {
         i++
       }
@@ -180,19 +161,8 @@ function Button(props) {
 function ButtonGroup(props) {
   return (
       <div className={(props.type === "number" ? "grid-cols-3 " : "grid-cols-1 " ) + "grid"}>
-        {props.group.map(b =>
-          <Button
-            data={b}
-            key={b.id}
-            type={props.type}
-            numbers={props.numbers}
-            setNumbers={props.setNumbers}
-            operations={props.operations}
-            setOperations={props.setOperations}
-          />
-        )}
+        {props.children}
       </div>
-
   )
 }
 
@@ -223,22 +193,32 @@ function App() {
             </div>
           </div>
           <div className="flex">
-              <ButtonGroup
-                group={numberGroup}
-                type="number"
-                numbers={numbers}
-                setNumbers={setNumbers}
-                operations={operations}
-                setOperations={setOperations}
-              />
-              <ButtonGroup
-                group={operatorGroup}
-                type="operator"
-                numbers={numbers}
-                setNumbers={setNumbers}
-                operations={operations}
-                setOperations={setOperations}
-              />
+              <ButtonGroup type="number">
+                {numberGroup.map(b =>
+                  <Button
+                    data={b}
+                    key={b.id}
+                    type={"number"}
+                    numbers={numbers}
+                    setNumbers={setNumbers}
+                    operations={operations}
+                    setOperations={setOperations}
+                  />
+                )}
+              </ButtonGroup>
+              <ButtonGroup type="operator">
+                {operatorGroup.map(b =>
+                  <Button
+                    data={b}
+                    key={b.id}
+                    type={"operator"}
+                    numbers={numbers}
+                    setNumbers={setNumbers}
+                    operations={operations}
+                    setOperations={setOperations}
+                  />
+                )}
+              </ButtonGroup> 
           </div>
         </div>
       </div>
