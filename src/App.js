@@ -64,19 +64,19 @@ function calculate(num, setNum, ops, setOps) {
   let removeOld = null;
 
   const operations = {
-    "x": function(x, y) {
-      return x * y
+    x: function (x, y) {
+      return x * y;
     },
-    "/": function(x, y) {
-      return x / y
+    "/": function (x, y) {
+      return x / y;
     },
-    "+": function(x, y) {
-      return x + y
+    "+": function (x, y) {
+      return x + y;
     },
-    "-": function(x, y) {
-      return x - y
-    }
-  }
+    "-": function (x, y) {
+      return x - y;
+    },
+  };
 
   function conductOperations(operators) {
     // scan operators using order of operations
@@ -85,7 +85,9 @@ function calculate(num, setNum, ops, setOps) {
       subTotal = 0;
       // conduct operation and capture total
       if (operators.includes(ops[i])) {
-        subTotal = [Number(num[i]), Number(num[i + 1])].reduce(operations[ops[i]]);
+        subTotal = [Number(num[i]), Number(num[i + 1])].reduce(
+          operations[ops[i]]
+        );
         removeOld = true;
       }
 
@@ -177,13 +179,13 @@ function display(nums, ops) {
       result.push(ops[j++]);
     }
   }
-  
+
   if (result[0].length > 12) {
-    const rounded = Number(result[0]).toFixed(4).toString()
+    const rounded = Number(result[0]).toFixed(4).toString();
     if (rounded <= 12) {
-      result = [rounded]
+      result = [rounded];
     } else {
-      result = ["MAX DIGITS"]
+      result = ["MAX DIGITS"];
     }
   }
   return result;
@@ -192,7 +194,7 @@ function display(nums, ops) {
 function App() {
   const [numbers, setNumbers] = useState(["0"]);
   const [operations, setOperations] = useState([]);
-  
+
   return (
     <div className="w-screen h-screen flex bg-gray-800">
       <div className="m-auto">
