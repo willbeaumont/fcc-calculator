@@ -63,20 +63,29 @@ function calculate(num, setNum, ops, setOps) {
   let subTotal = 0;
   let removeOld = null;
 
-  // scan operators until they're all gone
-  while (ops.length > 0) {
+  const operations = {
+    "x": function(x, y) {
+      return x * y
+    },
+    "/": function(x, y) {
+      return x / y
+    },
+    "+": function(x, y) {
+      return x + y
+    },
+    "-": function(x, y) {
+      return x - y
+    }
+  }
+
+  function conductOperations(operators) {
     // scan operators using order of operations
     for (let i = 0; i < ops.length; ) {
       removeOld = false;
       subTotal = 0;
       // conduct operation and capture total
-      if (ops[i] === "x") {
-        subTotal = Number(num[i]) * Number(num[i + 1]);
-        removeOld = true;
-      }
-
-      if (ops[i] === "/") {
-        subTotal = Number(num[i]) / Number(num[i + 1]);
+      if (operators.includes(ops[i])) {
+        subTotal = [Number(num[i]), Number(num[i + 1])].reduce(operations[ops[i]]);
         removeOld = true;
       }
 
@@ -88,29 +97,12 @@ function calculate(num, setNum, ops, setOps) {
         i++;
       }
     }
+  }
 
-    for (let i = 0; i < ops.length; ) {
-      removeOld = false;
-      subTotal = 0;
-      // conduct operation and capture total
-      if (ops[i] === "-") {
-        subTotal = Number(num[i]) - Number(num[i + 1]);
-        removeOld = true;
-      }
-
-      if (ops[i] === "+") {
-        subTotal = Number(num[i]) + Number(num[i + 1]);
-        removeOld = true;
-      }
-
-      // remove operation and numbers from state
-      if (removeOld) {
-        ops.splice(i, 1);
-        num.splice(i, 2, subTotal.toString());
-      } else {
-        i++;
-      }
-    }
+  // scan operators until they're all gone
+  while (ops.length > 0) {
+    conductOperations("x/");
+    conductOperations("+-");
   }
   setNum(num);
   setOps(false);
