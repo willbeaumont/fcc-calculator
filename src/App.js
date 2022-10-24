@@ -185,13 +185,22 @@ function display(nums, ops) {
       result.push(ops[j++]);
     }
   }
+  
+  if (result[0].length > 12) {
+    const rounded = Number(result[0]).toFixed(4).toString()
+    if (rounded <= 12) {
+      result = [rounded]
+    } else {
+      result = ["MAX DIGITS"]
+    }
+  }
   return result;
 }
 
 function App() {
   const [numbers, setNumbers] = useState(["0"]);
   const [operations, setOperations] = useState([]);
-
+  
   return (
     <div className="w-screen h-screen flex bg-gray-800">
       <div className="m-auto">
@@ -199,7 +208,7 @@ function App() {
           <div>
             <div
               id="display"
-              className="bg-gray-700 h-16 border-gray-800 text-5xl text-white text-right px-4 pt-1"
+              className="bg-gray-700 h-16 border-gray-800 text-3xl text-white align-text-bottom text-right px-4 pt-1 pb-2"
             >
               {display(numbers, operations)}
             </div>
