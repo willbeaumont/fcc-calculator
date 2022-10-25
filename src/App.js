@@ -183,7 +183,7 @@ function display(num, setNum, ops, setOps) {
     }
   }
 
-  if (result.length - result.split(".").length - 1 > 11) {
+  if (result.length - result.split(".").length + 1 > 11) {
     if (num.length === 1 && ops === false) {
       const rounded = Number(num[0]).toFixed(4).toString();
       if (rounded.length <= 11) {
