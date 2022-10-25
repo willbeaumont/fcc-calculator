@@ -44,6 +44,9 @@ function updateOperations(update, num, setNum, ops, setOps) {
   const currentNumber = num[num.length - 1];
 
   if (update === "=" && ops.length > 0) {
+    if (ops.length  === num.length) {
+      ops.pop();
+    }
     calculate(num, setNum, ops, setOps);
   } else if (ops.length !== num.length && currentNumber !== "-") {
     setOps((list) => (list ? list : []).concat(update));
@@ -169,24 +172,28 @@ function ButtonGroup(props) {
   );
 }
 
-function display(nums, ops) {
-  let result = [];
-  for (let i = 0, j = 0; i < nums.length || j < ops.length; ) {
-    if (i < nums.length) {
-      result.push(nums[i++]);
+function display(num, setNum, ops, setOps) {
+  let result = "";
+  for (let i = 0, j = 0; i < num.length || j < ops.length; ) {
+    if (i < num.length) {
+      result = result + num[i++];
     }
     if (j < ops.length) {
-      result.push(ops[j++]);
+      result = result + ops[j++];
     }
   }
 
-  if (result[0].length > 12) {
-    const rounded = Number(result[0]).toFixed(4).toString();
-    if (rounded <= 12) {
-      result = [rounded];
-    } else {
-      result = ["MAX DIGITS"];
+  if (result.length - result.split(".").length - 1 > 11) {
+    if (num.length === 1 && ops === false) {
+      const rounded = Number(num[0]).toFixed(4).toString();
+      if (rounded.length <= 11) {
+        setNum([rounded])
+        setOps(false)
+        return rounded
+      }
     }
+    
+    result = "MAX DIGITS";
   }
   return result;
 }
@@ -204,7 +211,7 @@ function App() {
               id="display"
               className="bg-gray-700 h-16 border-gray-800 text-3xl text-white align-text-bottom text-right px-4 pt-1 pb-2"
             >
-              {display(numbers, operations)}
+              {display(numbers, setNumbers, operations, setOperations)}
             </div>
           </div>
           <div className="flex">
